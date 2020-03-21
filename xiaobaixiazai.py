@@ -1,53 +1,4 @@
-"""
-def func(x):
-    if x>0:
-        print(x)
-        func(x-1)
 
-def func1(x):
-    if x>0:
-        func1(x-1)
-        print(x)
-
-def hanoi(n,a,b,c):
-    if n>0:
-        hanoi(n-1,a,c,b)
-        print("%d move from %s to %s"%(n,a,c))
-        hanoi(n-1,b,a,c)
-hanoi(3,"a","b","c")
-
-
-
-#获取基础信息数据，包括股票代码、名称、上市日期、退市日期等
-pool = pro.stock_basic(exchange='',
-                       list_status='L',
-                       adj='qfq',
-                       fields='ts_code,symbol,name,area,industry,fullname,list_date, market,exchange,is_hs')
-#print(pool.head())
-
-# 因为穷没开通创业板和科创板权限，这里只考虑主板和中心板
-pool = pool[pool['market'].isin(['主板', '中小板'])].reset_index()
-pool.to_csv(os.path.join(save_path, 'company_info.csv'), index=False, encoding='ANSI')
-
-
-for i in pool.ts_code:
-    print('正在获取第%d家，股票代码%s.' % (j, i))
-    #接口限制访问200次/分钟，加一点微小的延时防止被ban
-    path = os.path.join(save_path, 'OldData', i + '_NormalData.csv')
-    j += 1
-    # if os.path.exists(path):
-    #     continue
-    time.sleep(0.301)
-    df = pro.daily(ts_code=i,
-                   start_date=startdate,
-                   end_date=enddate,
-                   fields='ts_code, trade_date, open, high, low, close, pre_close, change, pct_chg, vol, amount')
-    df = df.sort_values('trade_date', ascending=True)
-    df.to_csv(path, index=False)
-
-
-
-"""
 import tushare as ts
 import pandas as pd
 import os
@@ -57,7 +8,7 @@ import time
 获取历史数据
 """
 
-mytoken = '32f764edd5c91565fcbfcde7d53e8d4be9bcef7c2fdf3e19b8dd2244'
+mytoken = '32f764edd5c91565fcbfcde7d53e8d4be9bcef7c2fdf3e19b8dd'
 ts.set_token(mytoken)
 save_path = 'd:\stock'
 pro = ts.pro_api()
@@ -79,7 +30,7 @@ def getNoramlData():
     pool.to_csv(os.path.join(save_path, 'company_info.csv'), index=False, encoding='ANSI')
 
     print('获得上市股票总数：', len(pool)-1)
-    exit()
+    
     j = 1
     for i in pool.ts_code:
         print('正在获取第%d家，股票代码%s.' % (j, i))
